@@ -13,7 +13,7 @@ Secondary Colors:
 - Pink:       #F16061
 
 Fonts:
-- Proxima Nova
+- Proxima Nova (paid; Montserrat from Google Fonts is used as a free lookalike)
 - Avenir
 
 */
@@ -31,8 +31,8 @@ body {
     min-height: 100vh;
     min-height: 100dvh;
     padding: 16px;
-    background-color: #fff8e1;
-    font-family: "Proxima Nova", Avenir, Arial, sans-serif;
+    background-color: #fff;
+    font-family: "Montserrat", "Proxima Nova", Avenir, Arial, sans-serif;
     color: #131313;
 }
 
@@ -57,6 +57,8 @@ body {
 
 .game-title {
     font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     text-align: center;
 }
 
@@ -74,10 +76,8 @@ body {
     gap: 10px;
     width: 100%;
     padding: 10px 16px;
-    background-color: #fff;
+    background-color: #f5f5f5;
     border-top: 4px solid #FFC907;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .score,
@@ -102,11 +102,14 @@ body {
     padding: 8px 18px;
     background-color: #FFC907;
     color: #131313;
-    border: none;
-    border-radius: 4px;
+    border: 2px solid #FFC907;
+    border-radius: 2px;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 }
 
 #start-btn:hover:not(:disabled) {
@@ -115,12 +118,13 @@ body {
 
 #reset-btn {
     background-color: #fff;
-    border: 2px solid #2E9DF7;
-    color: #2E9DF7;
+    border-color: #131313;
+    color: #131313;
 }
 
 #reset-btn:hover {
-    background-color: #e6f7ff;
+    background-color: #131313;
+    color: #fff;
 }
 
 #start-btn:disabled {
@@ -135,8 +139,7 @@ body {
     min-height: 260px;
     max-height: 600px;
     background: linear-gradient(#e6f7ff, #8BD1CB);
-    border: 2px solid #2E9DF7;
-    border-radius: 8px;
+    border: 2px solid #131313;
     position: relative;
     overflow: hidden;
     touch-action: none;
@@ -261,20 +264,23 @@ body {
     max-width: 110px;
     padding: 6px 10px;
     background-color: #fff;
-    border: 2px solid #2E9DF7;
-    border-radius: 4px;
-    color: #2E9DF7;
+    border: 2px solid #131313;
+    border-radius: 2px;
+    color: #131313;
     cursor: pointer;
-    font-size: 15px;
-    font-weight: bold;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 }
 
 .difficulty-btn:hover {
-    background-color: #e6f7ff;
+    background-color: #f5f5f5;
 }
 
 .difficulty-btn.selected {
-    background-color: #2E9DF7;
+    background-color: #131313;
     color: #fff;
 }
 
@@ -293,15 +299,15 @@ body {
     overflow-y: auto;
     padding: 24px;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 2px solid #131313;
+    border-top: 6px solid #FFC907;
     text-align: center;
     line-height: 1.6;
     cursor: default;
 }
 
 .message h2 {
-    color: #2E9DF7;
+    font-weight: 800;
     margin-bottom: 8px;
 }
 
@@ -334,14 +340,17 @@ body {
     justify-content: space-between;
     gap: 12px;
     width: 100%;
-    padding: 8px 4px;
+    padding: 10px 0 4px;
+    border-top: 1px solid #e0e0e0;
     font-size: 14px;
     color: #555;
 }
 
 .site-footer a {
-    color: #2E9DF7;
-    font-weight: bold;
+    color: #131313;
+    font-weight: 700;
+    text-decoration-color: #FFC907;
+    text-decoration-thickness: 3px;
 }
 
 .site-footer .donate-btn {
@@ -349,8 +358,11 @@ body {
     padding: 8px 18px;
     background-color: #FFC907;
     color: #131313;
-    border-radius: 4px;
+    border-radius: 2px;
     text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 13px;
 }
 
 .site-footer .donate-btn:hover {
@@ -407,7 +419,7 @@ body {
     .goal,
     .lives,
     .timer {
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .buttons {
