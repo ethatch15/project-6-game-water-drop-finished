@@ -266,7 +266,9 @@ body {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    white-space: nowrap;
+    text-align: center;
+    width: max-content;
+    max-width: 90%;
     pointer-events: none;
     z-index: 5;
     animation: milestonePop 1.6s ease-out forwards;

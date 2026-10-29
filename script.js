@@ -38,6 +38,7 @@ function playSound(name) {
 const MILESTONES = [
   { score: WIN_SCORE / 2, text: "Halfway there!" },
   { score: WIN_SCORE - 5, text: "Almost there!" },
+  { score: WIN_SCORE, text: "Goal met, keep going!" },
 ];
 
 // Messages shown at the end of the game
