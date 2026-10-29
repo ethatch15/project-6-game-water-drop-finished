@@ -5,8 +5,14 @@ const CLEAN_POINTS = 4;      // Points for catching a clean drop
 const MISS_PENALTY = 1;      // Points lost when a clean drop hits the ground
 const WIN_SCORE = 40;        // Score needed to win
 const DIRTY_CHANCE = 0.3;    // 30% of drops are dirty
-const FALL_SPEED = 180;      // Pixels per second drops fall
 const CATCHER_SPEED = 600;   // Pixels per second when using arrow keys
+
+// Difficulty levels: how fast drops fall (pixels per second) and how often a germ appears
+const DIFFICULTIES = {
+  easy:   { fallSpeed: 120, germChance: 0 },
+  medium: { fallSpeed: 180, germChance: 0 },
+  hard:   { fallSpeed: 270, germChance: 0.12 }, // 12% of drops are game-ending germs
+};
 
 // Messages shown at the end of the game
 const winMessages = [
@@ -45,6 +51,8 @@ let dropMaker;           // Timer that creates drops regularly
 let countdown;           // Timer that counts down the seconds
 let lastFrame;           // Time of the last animation frame
 let catcherX = 0;        // Left edge of the bucket, in pixels
+let difficulty = "medium";
+let caughtGerm = false;  // True if the player caught a germ (instant loss)
 const keysDown = {};     // Which arrow keys are being held
 
 // Show the winning score at the top
@@ -57,6 +65,19 @@ const howToPlayText = messageText.innerHTML;
 startBtn.addEventListener("click", startGame);
 resetBtn.addEventListener("click", resetGame);
 
+// Difficulty buttons: highlight the chosen one
+const difficultyBtns = document.querySelectorAll(".difficulty-btn");
+difficultyBtns.forEach((btn) => {
+  btn.setAttribute("aria-checked", btn.dataset.level === difficulty);
+  btn.addEventListener("click", () => {
+    difficulty = btn.dataset.level;
+    difficultyBtns.forEach((b) => {
+      b.classList.toggle("selected", b === btn);
+      b.setAttribute("aria-checked", b === btn);
+    });
+  });
+});
+
 function startGame() {
   // Prevent multiple games from running at once
   if (gameRunning) return;
@@ -68,6 +89,7 @@ function startGame() {
   cleanCaught = 0;
   cleanMissed = 0;
   dirtyCaught = 0;
+  caughtGerm = false;
   timeLeft = GAME_TIME;
   drops.forEach((d) => d.el.remove());
   drops = [];
@@ -94,8 +116,13 @@ function startGame() {
 
 function createDrop() {
   const drop = document.createElement("div");
-  const isDirty = Math.random() < DIRTY_CHANCE;
-  drop.className = isDirty ? "water-drop dirty-drop" : "water-drop";
+
+  // Roll once to decide the type: germ (hard mode only), dirty, or clean
+  const roll = Math.random();
+  const germChance = DIFFICULTIES[difficulty].germChance;
+  const isGerm = roll < germChance;
+  const isDirty = !isGerm && roll < germChance + DIRTY_CHANCE;
+  drop.className = isGerm ? "germ" : isDirty ? "water-drop dirty-drop" : "water-drop";
 
   // Make drops different sizes for visual variety
   const size = 40 * (Math.random() * 0.5 + 0.75);
@@ -107,7 +134,7 @@ function createDrop() {
   drop.style.left = `${x}px`;
 
   container.appendChild(drop);
-  drops.push({ el: drop, x, y: -size, size, isDirty });
+  drops.push({ el: drop, x, y: -size, size, isDirty, isGerm });
 }
 
 function gameLoop(now) {
@@ -124,11 +151,12 @@ function gameLoop(now) {
   const bucketTop = catcher.offsetTop;
   const bucketLeft = catcherX;
   const bucketRight = catcherX + catcher.offsetWidth;
+  const fallSpeed = DIFFICULTIES[difficulty].fallSpeed;
 
   // Move each drop down and check whether it was caught or missed
   for (let i = drops.length - 1; i >= 0; i--) {
     const d = drops[i];
-    d.y += FALL_SPEED * dt;
+    d.y += fallSpeed * dt;
     // Use translate (not transform) so the drop's rotation doesn't tilt its fall
     d.el.style.translate = `0 ${d.y}px`;
 
@@ -141,7 +169,13 @@ function gameLoop(now) {
       centerX <= bucketRight;
 
     if (caught) {
-      if (d.isDirty) {
+      if (d.isGerm) {
+        // Catching a germ ends the game right away
+        caughtGerm = true;
+        flash("hit");
+        removeDrop(i);
+        break;
+      } else if (d.isDirty) {
         lives--;
         dirtyCaught++;
         flash("hit");
@@ -153,7 +187,7 @@ function gameLoop(now) {
       removeDrop(i);
     } else if (d.y > groundY) {
       // Only clean drops cost points when they hit the ground
-      if (!d.isDirty) {
+      if (!d.isDirty && !d.isGerm) {
         score -= MISS_PENALTY;
         cleanMissed++;
       }
@@ -163,7 +197,7 @@ function gameLoop(now) {
 
   updateHud();
 
-  if (lives <= 0) {
+  if (lives <= 0 || caughtGerm) {
     endGame();
     return;
   }
@@ -208,14 +242,17 @@ function endGame() {
   stopGame();
 
   // A perfect game: caught every clean drop and no dirty ones
-  const perfect = cleanCaught > 0 && cleanMissed === 0 && dirtyCaught === 0;
+  const perfect = !caughtGerm && cleanCaught > 0 && cleanMissed === 0 && dirtyCaught === 0;
 
   // Pick a random message from the right list
-  const won = perfect || (score >= WIN_SCORE && lives > 0);
+  const won = !caughtGerm && (perfect || (score >= WIN_SCORE && lives > 0));
   const list = won ? winMessages : loseMessages;
   const message = list[Math.floor(Math.random() * list.length)];
 
-  if (perfect) {
+  if (caughtGerm) {
+    messageTitle.textContent = "You lose! 🦠";
+    messageText.innerHTML = `You caught a germ! Germs make water unsafe to drink.<br>Final score: <strong>${score}</strong>`;
+  } else if (perfect) {
     messageTitle.textContent = "You win! 🎉";
     messageText.innerHTML = `Perfect game! You caught every clean drop.<br>Final score: <strong>${score}</strong>`;
   } else {

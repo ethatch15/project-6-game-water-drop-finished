@@ -173,6 +173,60 @@ body {
     box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.25);
 }
 
+/* Germs (hard mode): a red, spotted ball with a spiky edge. Catching one ends the game. */
+.germ {
+    position: absolute;
+    top: 0;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 35%, #ff8a7a 0 12%, transparent 13%),
+        radial-gradient(circle at 65% 60%, #a3150a 0 10%, transparent 11%),
+        radial-gradient(circle at 35% 70%, #a3150a 0 8%, transparent 9%),
+        #F5402C;
+    border: 4px dotted #a3150a;
+    box-shadow: 0 0 8px rgba(245, 64, 44, 0.7);
+    animation: germSpin 1.5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes germSpin {
+    to { rotate: 360deg; }
+}
+
+.difficulty {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.difficulty-btn {
+    flex: 1;
+    max-width: 110px;
+    padding: 6px 10px;
+    background-color: #fff;
+    border: 2px solid #2E9DF7;
+    border-radius: 4px;
+    color: #2E9DF7;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.difficulty-btn:hover {
+    background-color: #e6f7ff;
+}
+
+.difficulty-btn.selected {
+    background-color: #2E9DF7;
+    color: #fff;
+}
+
+.difficulty-btn[data-level="hard"].selected {
+    background-color: #F5402C;
+    border-color: #F5402C;
+}
+
 .message {
     position: absolute;
     inset: 0;
