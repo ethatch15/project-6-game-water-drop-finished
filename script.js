@@ -11,7 +11,7 @@ const CATCHER_SPEED = 600;   // Pixels per second when using arrow keys
 const DIFFICULTIES = {
   easy:   { fallSpeed: 120, germChance: 0 },
   medium: { fallSpeed: 180, germChance: 0 },
-  hard:   { fallSpeed: 270, germChance: 0.12 }, // 12% of drops are game-ending germs
+  hard:   { fallSpeed: 310, germChance: 0.12 }, // 12% of drops are game-ending germs
 };
 
 // Messages shown at the end of the game
