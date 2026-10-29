@@ -193,6 +193,62 @@ body {
     to { rotate: 360deg; }
 }
 
+/* Splash shown where a drop lands in the bucket. It's a zero-size anchor;
+   the dots and label are positioned around it. */
+.splash {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.splash-dot {
+    position: absolute;
+    left: -6px;
+    top: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    animation: splashBurst 0.6s ease-out forwards;
+}
+
+.splash-clean .splash-dot { background-color: #2E9DF7; }
+.splash-dirty .splash-dot { background-color: #7a5230; width: 14px; height: 10px; }
+.splash-germ .splash-dot  { background-color: #F5402C; box-shadow: 0 0 6px #F5402C; }
+
+.splash-label {
+    position: absolute;
+    left: 0;
+    top: -20px;
+    translate: -50% 0;
+    font-size: 24px;
+    font-weight: bold;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px #fff;
+    animation: splashLabel 0.8s ease-out forwards;
+}
+
+.splash-clean .splash-label { color: #159A48; }
+.splash-germ .splash-label  { font-size: 32px; }
+
+/* Stay fully visible for most of the animation, then fade out at the end */
+@keyframes splashBurst {
+    60% { opacity: 1; }
+    to {
+        translate: var(--dx) var(--dy);
+        scale: 0.3;
+        opacity: 0;
+    }
+}
+
+@keyframes splashLabel {
+    50% { opacity: 1; }
+    to {
+        translate: -50% -50px;
+        opacity: 0;
+    }
+}
+
 .difficulty {
     display: flex;
     justify-content: center;

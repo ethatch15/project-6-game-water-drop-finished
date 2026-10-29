@@ -169,20 +169,25 @@ function gameLoop(now) {
       centerX <= bucketRight;
 
     if (caught) {
+      // The splash appears where the drop hit the water in the bucket
+      const splashY = bucketTop + 15;
       if (d.isGerm) {
         // Catching a germ ends the game right away
         caughtGerm = true;
         flash("hit");
+        showSplash("germ", centerX, splashY);
         removeDrop(i);
         break;
       } else if (d.isDirty) {
         lives--;
         dirtyCaught++;
         flash("hit");
+        showSplash("dirty", centerX, splashY);
       } else {
         score += CLEAN_POINTS;
         cleanCaught++;
         flash("catch");
+        showSplash("clean", centerX, splashY);
       }
       removeDrop(i);
     } else if (d.y > groundY) {
@@ -203,6 +208,42 @@ function gameLoop(now) {
   }
 
   requestAnimationFrame(gameLoop);
+}
+
+// ----- Splashes -----
+
+// Creates a burst of droplets and a floating label where a drop was caught.
+// Each splash removes itself from the page when its animation finishes.
+function showSplash(type, x, y) {
+  const splash = document.createElement("div");
+  splash.className = `splash splash-${type}`;
+  splash.style.left = `${x}px`;
+  splash.style.top = `${y}px`;
+
+  // Clean and dirty drops spray upward out of the bucket; germs burst in every direction
+  const count = type === "germ" ? 12 : 8;
+  for (let i = 0; i < count; i++) {
+    const dot = document.createElement("span");
+    dot.className = "splash-dot";
+    const angle = type === "germ"
+      ? (Math.PI * 2 * i) / count
+      : Math.PI + (Math.PI * i) / (count - 1);
+    const distance = 30 + Math.random() * 25;
+    dot.style.setProperty("--dx", `${Math.cos(angle) * distance}px`);
+    dot.style.setProperty("--dy", `${Math.sin(angle) * distance}px`);
+    splash.appendChild(dot);
+  }
+
+  const labels = { clean: `+${CLEAN_POINTS}`, dirty: "💔", germ: "🦠" };
+  const label = document.createElement("span");
+  label.className = "splash-label";
+  label.textContent = labels[type];
+  splash.appendChild(label);
+
+  container.appendChild(splash);
+
+  // The label's animation is the longest, so remove the whole splash when it ends
+  label.addEventListener("animationend", () => splash.remove());
 }
 
 function removeDrop(index) {
@@ -226,7 +267,7 @@ function resetGame() {
   lives = START_LIVES;
   timeLeft = GAME_TIME;
   updateHud();
-  document.querySelectorAll(".confetti").forEach((c) => c.remove());
+  document.querySelectorAll(".confetti, .splash").forEach((el) => el.remove());
 
   messageTitle.textContent = howToPlayTitle;
   messageText.innerHTML = howToPlayText;
