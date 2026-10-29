@@ -44,3 +44,15 @@ Here’s what you're required to implement to bring the game to life:
 These are the minimum requirements, but if you'd like an additional challenge go ahead and give the LevelUps a shot! For example, you can set up logic to make some of the drops "bad" drops that remove points if the user click them, complete with a different color to distinguish them from "good" drops. Have fun and make the game your own!
 
 If you have any questions or need any assistance with your code, reach out to the HelpHub or attend a Drop-In Hour. You got this!!
+
+## Sound Credits
+
+All sound effects are from [Freesound.org](https://freesound.org) and released under the [Creative Commons 0 (public domain)](https://creativecommons.org/publicdomain/zero/1.0/) license.
+
+| File | Used for | Sound | Author |
+|---|---|---|---|
+| `sounds/catch-clean.mp3` | Catching a clean drop | [Small Water Splash](https://freesound.org/s/737233/) | qubodup |
+| `sounds/catch-dirty.mp3` | Catching a dirty drop | [Mud Splat](https://freesound.org/s/445109/) | Breviceps |
+| `sounds/catch-germ.mp3` | Catching a germ (Hard mode) | [Slime attack or movement](https://freesound.org/s/188384/) | wubitog |
+| `sounds/win.mp3` | Winning the game | [Tada Fanfare A](https://freesound.org/s/397355/) | plasterbrain |
+| `sounds/lose.mp3` | Losing the game | [horn_fail_wahwah_1](https://freesound.org/s/362206/) | TaranP |

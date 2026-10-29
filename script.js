@@ -14,6 +14,26 @@ const DIFFICULTIES = {
   hard:   { fallSpeed: 310, germChance: 0.12 }, // 12% of drops are game-ending germs
 };
 
+// Sound effects (free CC0 sounds from Freesound.org; see README for credits)
+const sounds = {
+  clean: new Audio("sounds/catch-clean.mp3"),
+  dirty: new Audio("sounds/catch-dirty.mp3"),
+  germ: new Audio("sounds/catch-germ.mp3"),
+  win: new Audio("sounds/win.mp3"),
+  lose: new Audio("sounds/lose.mp3"),
+};
+sounds.clean.volume = 0.6;
+sounds.lose.volume = 0.7;
+
+// Play a sound from the start. Catch sounds use a copy so quick catches can overlap.
+function playSound(name) {
+  const sound = ["clean", "dirty"].includes(name) ? sounds[name].cloneNode() : sounds[name];
+  sound.volume = sounds[name].volume;
+  sound.currentTime = 0;
+  // Browsers can block audio until the player interacts with the page, so ignore errors
+  sound.play().catch(() => {});
+}
+
 // Messages shown at the end of the game
 const winMessages = [
   "Amazing! You brought clean water to a whole village!",
@@ -241,6 +261,7 @@ function showSplash(type, x, y) {
   splash.appendChild(label);
 
   container.appendChild(splash);
+  playSound(type);
 
   // The label's animation is the longest, so remove the whole splash when it ends
   label.addEventListener("animationend", () => splash.remove());
@@ -303,6 +324,15 @@ function endGame() {
 
   // Confetti for every win
   if (won) launchConfetti();
+
+  // Celebration or sad sound. After a germ, wait for the slime sound to finish first.
+  if (won) {
+    playSound("win");
+  } else if (caughtGerm) {
+    setTimeout(() => playSound("lose"), 700);
+  } else {
+    playSound("lose");
+  }
 
   messageEl.classList.remove("hidden");
 
