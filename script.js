@@ -4,14 +4,14 @@ const START_LIVES = 3;       // Lives the player starts with
 const CLEAN_POINTS = 4;      // Points for catching a clean drop
 const MISS_PENALTY = 1;      // Points lost when a clean drop hits the ground
 const WIN_SCORE = 40;        // Score needed to win
-const DIRTY_CHANCE = 0.3;    // 30% of drops are dirty
 const CATCHER_SPEED = 600;   // Pixels per second when using arrow keys
 
-// Difficulty levels: how fast drops fall (pixels per second) and how often a germ appears
+// Difficulty levels: how fast drops fall (pixels per second), and what share of drops
+// are dirty or game-ending germs
 const DIFFICULTIES = {
-  easy:   { fallSpeed: 120, germChance: 0 },
-  medium: { fallSpeed: 180, germChance: 0 },
-  hard:   { fallSpeed: 310, germChance: 0.12 }, // 12% of drops are game-ending germs
+  easy:   { fallSpeed: 120, dirtyChance: 0.3, germChance: 0 },    // 70% clean
+  medium: { fallSpeed: 180, dirtyChance: 0.5, germChance: 0 },    // 50% clean
+  hard:   { fallSpeed: 310, dirtyChance: 0.5, germChance: 0.1 },  // 40% clean
 };
 
 // Sound effects (free CC0 sounds from Freesound.org; see README for credits)
@@ -148,9 +148,9 @@ function createDrop() {
 
   // Roll once to decide the type: germ (hard mode only), dirty, or clean
   const roll = Math.random();
-  const germChance = DIFFICULTIES[difficulty].germChance;
+  const { dirtyChance, germChance } = DIFFICULTIES[difficulty];
   const isGerm = roll < germChance;
-  const isDirty = !isGerm && roll < germChance + DIRTY_CHANCE;
+  const isDirty = !isGerm && roll < germChance + dirtyChance;
   drop.className = isGerm ? "germ" : isDirty ? "water-drop dirty-drop" : "water-drop";
 
   // Make drops different sizes for visual variety
