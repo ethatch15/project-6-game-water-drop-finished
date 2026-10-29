@@ -252,6 +252,34 @@ body {
     }
 }
 
+/* Milestone message: pops up in the middle of the game, then fades away */
+.milestone {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    translate: -50% -50%;
+    padding: 10px 24px;
+    background-color: #FFC907;
+    border: 2px solid #131313;
+    color: #131313;
+    font-size: 28px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 5;
+    animation: milestonePop 1.6s ease-out forwards;
+}
+
+@keyframes milestonePop {
+    0%   { scale: 0.5; opacity: 0; }
+    15%  { scale: 1.1; opacity: 1; }
+    25%  { scale: 1; }
+    70%  { opacity: 1; translate: -50% -50%; }
+    100% { opacity: 0; translate: -50% -90%; }
+}
+
 .difficulty {
     display: flex;
     justify-content: center;
@@ -430,6 +458,11 @@ body {
     #reset-btn {
         flex: 1;
         padding: 10px;
+    }
+
+    .milestone {
+        font-size: 20px;
+        padding: 8px 16px;
     }
 
     .site-footer {

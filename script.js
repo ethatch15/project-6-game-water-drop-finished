@@ -34,6 +34,12 @@ function playSound(name) {
   sound.play().catch(() => {});
 }
 
+// Messages that pop up once per game when the score first reaches each milestone
+const MILESTONES = [
+  { score: WIN_SCORE / 2, text: "Halfway there!" },
+  { score: WIN_SCORE - 5, text: "Almost there!" },
+];
+
 // Messages shown at the end of the game
 const winMessages = [
   "Amazing! You brought clean water to a whole village!",
@@ -73,6 +79,7 @@ let lastFrame;           // Time of the last animation frame
 let catcherX = 0;        // Left edge of the bucket, in pixels
 let difficulty = "medium";
 let caughtGerm = false;  // True if the player caught a germ (instant loss)
+let milestonesShown = 0; // How many milestone messages have popped up this game
 const keysDown = {};     // Which arrow keys are being held
 
 // Show the winning score at the top
@@ -110,6 +117,7 @@ function startGame() {
   cleanMissed = 0;
   dirtyCaught = 0;
   caughtGerm = false;
+  milestonesShown = 0;
   timeLeft = GAME_TIME;
   drops.forEach((d) => d.el.remove());
   drops = [];
@@ -208,6 +216,7 @@ function gameLoop(now) {
         cleanCaught++;
         flash("catch");
         showSplash("clean", centerX, splashY);
+        checkMilestones();
       }
       removeDrop(i);
     } else if (d.y > groundY) {
@@ -267,6 +276,27 @@ function showSplash(type, x, y) {
   label.addEventListener("animationend", () => splash.remove());
 }
 
+// ----- Milestones -----
+
+// Show the next milestone message once the score reaches it
+function checkMilestones() {
+  const next = MILESTONES[milestonesShown];
+  if (next && score >= next.score) {
+    milestonesShown++;
+    showMilestone(next.text);
+  }
+}
+
+// Pops a message up in the middle of the game, then removes it after it fades
+function showMilestone(text) {
+  container.querySelectorAll(".milestone").forEach((el) => el.remove());
+  const el = document.createElement("div");
+  el.className = "milestone";
+  el.textContent = text;
+  container.appendChild(el);
+  el.addEventListener("animationend", () => el.remove());
+}
+
 function removeDrop(index) {
   drops[index].el.remove();
   drops.splice(index, 1);
@@ -288,7 +318,7 @@ function resetGame() {
   lives = START_LIVES;
   timeLeft = GAME_TIME;
   updateHud();
-  document.querySelectorAll(".confetti, .splash").forEach((el) => el.remove());
+  document.querySelectorAll(".confetti, .splash, .milestone").forEach((el) => el.remove());
 
   messageTitle.textContent = howToPlayTitle;
   messageText.innerHTML = howToPlayText;
